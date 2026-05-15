@@ -4,6 +4,7 @@ import json
 import re
 from llm import llm
 
+
 def generate_test_scenarios(
     endpoint: str,
     method: str,
