@@ -22,7 +22,6 @@ def test_case_1():
     except Exception as e:
         print(f"Error: {e}")
         raise
-
 def test_case_2():
     try:
         response = requests.post('https://dummyjson.com/comments/add', json={
