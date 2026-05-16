@@ -2,7 +2,7 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 import json
 import re
-from llm import llm
+from llm import llm,llm_scenarios
 
 
 def generate_test_scenarios(
@@ -19,38 +19,47 @@ def generate_test_scenarios(
 
     system_prompt = SystemMessage(
         content="""
-     
-   
- Use only:
-API Description, Method, Endpoint, Input Schema, Output Schema, More Info.
+    Use only:
+    API Description, Method, Endpoint, Input Schema, Output Schema, More Info provided in user_prompt.
 
-Generate multiple test scenarios ensuring good coverage of different cases. Aim for at least 1–2 scenarios per logical category when possible (schema validation, contract validation, negative cases, boundary cases, and other relevant scenarios derived strictly from the provided information).
+    Generate multiple test scenarios ensuring good coverage of different cases. Generate multiplescenarios on different categories (schema validation, contract validation, negative cases, boundary cases, and other relevant scenarios derived strictly from the provided information).
 
-Write scenarios in simple English only.
+    Use More Info provided in user-prompt  to derive additional edge cases and test scenarios.
 
-Rules:
-Do not assume anything not provided.
-Do not use code, assertions, operators (>, <, ===, etc.).
-Do not fabricate fields, endpoints, or responses.
-Describe data conceptually only.
-Modify query parameters only if required and supported.
-Input schema changes allowed only for POST/PUT APIs.
-Do not include numbers, prefixes, labels, or category names.
-Each scenario must be a single-line sentence.
-Do not insert newline characters inside a scenario.
-Do not use bullet points.
+    Input modification rules: Query parameters may be modified freely. Input schema may be modified only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior.
 
-Output must be valid JSON only in this format:
+    Strict assertion rules: No keyword-only assertions are allowed. Every assertion must be a complete executable validation statement. Schema references, $ref, and schema paths are strictly prohibited.
 
-[
-"Scenario description here",
-"Another scenario description here"
-]
+    Output Schema rules: Output Schema is a strict contract. No missing fields, no extra fields, exact field names (case-sensitive), and exact nesting must be preserved. Schema validation must include strict checks for missing fields, extra fields, and type mismatches.
 
-Return ONLY the JSON array.
-No explanation.
-No markdown.
-No extra text.
+    Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
+
+    Write scenarios in simple English only.
+
+
+    Rules:
+    Do not assume anything not provided.
+    Do not modify the method and endpoint provided in user prompt.
+    Do not use code, assertions, operators (>, <, ===, etc.).
+    Do not fabricate fields, endpoints, or responses.
+    Describe data conceptually only.
+    Modify query parameters only if required and supported.
+    Input schema changes allowed only for POST/PUT APIs.
+    Do not include numbers, prefixes, labels, or category names.
+    Each scenario must be a single-line sentence.
+    Do not insert newline characters inside a scenario.
+
+    Output must be valid JSON only in this format:
+
+    [
+    "Scenario description here",
+    "Another scenario description here"
+    ]
+
+    Return ONLY the JSON array.
+    No explanation.
+    No markdown.
+    No extra text.
 
 """
     )
@@ -76,7 +85,7 @@ No extra text.
 """
     )
 
-    response = llm.invoke([system_prompt, user_prompt])
+    response = llm_scenarios.invoke([system_prompt, user_prompt])
 
     raw_output = response.content.strip()
 
