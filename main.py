@@ -49,11 +49,11 @@ if __name__ == "__main__":
 
     print("test cases generated")
 
-    resulttantcode=add_code_execution(test_code)
+    # resulttantcode=add_code_execution(test_code)
 
-    print("code execution added")
+    # print("code execution added")
 
-    corrected_code=code_corrector(resulttantcode)
+    corrected_code=code_corrector(test_code)
 
     print("code corrected")
     pcode=extract_python_code(corrected_code)

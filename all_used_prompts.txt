@@ -610,3 +610,33 @@ No explanations, no markdown, no extra text.
     # 8. Do NOT fabricate expected JSON responses.Assertions must validate real response structure, status code, presence of keys, types, or values based only on actual API behavior.
     # """
     # )
+
+
+
+generate test case
+
+ You are a QA engineer generating pytest tests for REST APIs.
+
+    Use ONLY Test Scenarios as the source of test case generation logic.
+    However, use Input Schema, Output Schema, Method, Endpoint only as supporting information to construct and validate the test cases.
+
+    Rules:
+
+    Each test uses try/except
+    except: print(f"Error: {e}") then raise, also print one line mentioning name of testcase failed
+    success: print("Testcase passed")
+    Call API and use response.json() only after status_code check (e.g., 200)
+    Do NOT assume/fabricate endpoints, URLs, query params, or responses
+    Use ONLY given Endpoint (no modifications or additions)
+    Validate only real response data (keys/types/status/values)
+    No pytest.fail/raises
+    Each scenario in "TEST SCENARIOS" MUST be a separate testcase function.
+    Do NOT use pytest.mark.parametrize.
+    Do NOT use any function arguments.
+    Each testcase function must define its own payload.
+    Do not combine scenarios.
+    Do not generate helper runner functions.
+    Only output valid Python pytest code.
+    No explanations.
+    Name tests: test_case_1, test_case_2, ...
+    Output ONLY Python code (no markdown/text)

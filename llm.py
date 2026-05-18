@@ -7,7 +7,7 @@ from langchain_ollama import ChatOllama
 # LLM Configuration
 # -----------------------------
 llm = ChatOllama(
-    model="llama3.2",
+    model="llama3:8b",
     temperature=0
 )
 
