@@ -25,9 +25,14 @@ def generate_test_cases(
     You are a QA engineer generating pytest tests for REST APIs.
 
     Use ONLY Test Scenarios as the source of test case generation logic.
+                                          
+    For each scenario , Analyse the description , outcome and status code and make sure that testcase should pass only for the status code mentioned in each scenario.
+                                          
     However, use Input Schema, Output Schema, Method, Endpoint only as supporting information to construct and validate the test cases.
+                                          
+    Make sure that you remove the pytest.fail and pytest.raises from the generated code.
 
-    Rules:
+    STRICT RULES:
 
     Each test uses try/except
     except: print(f"Error: {e}") then raise, also print one line mentioning name of testcase failed
@@ -36,8 +41,10 @@ def generate_test_cases(
     Do NOT assume/fabricate endpoints, URLs, query params, or responses
     Use ONLY given Endpoint (no modifications or additions)
     Validate only real response data (keys/types/status/values)
-    No pytest.fail/raises
+    pytest.fail, pytest.raises, or any pytest-based failure handling are strictly forbidden. All failures must be handled only using try/except blocks with print statements and re-raise.
     Name tests: test_case_1, test_case_2, ...
+    In the end add a function to execute all test cases: def run_all_tests():
+    call the function run_all_tests() at the end
     Output ONLY Python code (no markdown/text)
 
 """))

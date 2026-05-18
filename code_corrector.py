@@ -13,6 +13,7 @@ FULLY ANALYZE and FIX the given Python code so it becomes 100% executable.
 
 CRITICAL RULES:
     1. Preserve the original intent of the code while fixing all issues; you may modify, rewrite, or repair any part of the code. Ensure all missing imports are added at the top.
+    2. Remove pytest.fail if added in catch block in the code with raise Exception instead.
     2. Fix all possible errors including syntax, indentation, imports, API calls, JSON parsing, runtime/logic errors, undefined variables, broken control flow, and incorrect function usage.
     4. Validate and correct the API request by ensuring consistency between path parameters and query parameters (avoid duplicating the same identifier in both URL and params), and ensure all query values respect valid API constraints
     5. If a test runner exists, fix it so it correctly discovers and executes all test_* functions using globals() (not __builtins__).

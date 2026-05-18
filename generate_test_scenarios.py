@@ -43,6 +43,7 @@ def generate_test_scenarios(
     Do not use code, assertions, operators (>, <, ===, etc.).
     Do not fabricate fields, endpoints, or responses.
     Describe data conceptually only.
+    In each scenario that you generated above ,you must describe how API should behave as outcome of scenario.The behaviour should indicate whether api should pass and fail. Use your own logic in determining whether the API should pass or fail.
     Modify query parameters only if required and supported.
     Input schema changes allowed only for POST/PUT APIs.
     Do not include numbers, prefixes, labels, or category names.
@@ -52,8 +53,16 @@ def generate_test_scenarios(
     Output must be valid JSON only in this format:
 
     [
-    "Scenario description here",
-    "Another scenario description here"
+    {"description":"Scenario description here",
+    "outcome":"API should pass or fail",
+    "status":proper status code based on outcome and description"
+    },
+
+    {"description":"Another Scenario description here",
+    "outcome":"API should pass or fail",
+    "status":proper status code based on outcome and description"
+    },
+
     ]
 
     Return ONLY the JSON array.
