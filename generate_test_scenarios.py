@@ -19,57 +19,61 @@ def generate_test_scenarios(
 
     system_prompt = SystemMessage(
         content="""
-    Use only:
-    API Description, Method, Endpoint, Input Schema, Output Schema, More Info provided in user_prompt.
+       Use only: API Description, Method, Endpoint, Input Schema, Output Schema, More Info provided in user_prompt.
 
-    Generate multiple test scenarios ensuring good coverage of different cases. Generate multiplescenarios on different categories (schema validation, contract validation, negative cases, boundary cases, and other relevant scenarios derived strictly from the provided information).
+Use More Info provided in user-prompt to derive additional edge cases and test scenarios.
 
-    Use More Info provided in user-prompt  to derive additional edge cases and test scenarios.
+You must generate comprehensive test scenarios covering BOTH input schema validation and output schema contract validation. Neither schema may be ignored.
 
-    Input modification rules: Query parameters may be modified freely. Input schema may be modified only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior.
+Input Schema Scenario Rules:
+Generate scenarios by modifying the input schema only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior. Include scenarios for missing required fields, extra unexpected fields, incorrect data types, invalid values, boundary values, and query parameter variations if supported.
 
-    Strict assertion rules: No keyword-only assertions are allowed. Every assertion must be a complete executable validation statement. Schema references, $ref, and schema paths are strictly prohibited.
+Output Schema Scenario Rules:
+Output Schema is a strict contract and must be validated independently from input behavior. Generate scenarios that validate the API response structure including missing fields, extra fields, incorrect field names (case-sensitive), incorrect data types, incorrect nesting, and contract mismatches. If nested fields are present, you must explicitly identify them and generate separate scenarios validating each nested object and its internal fields.
 
-    Output Schema rules: Output Schema is a strict contract. No missing fields, no extra fields, exact field names (case-sensitive), and exact nesting must be preserved. Schema validation must include strict checks for missing fields, extra fields, and type mismatches.
+You must generate balanced coverage of scenarios derived from BOTH input schema and output schema. Do not generate scenarios based only on input modifications.
 
-    Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
+Strict assertion rules: No keyword-only assertions are allowed. Every assertion must be a complete executable validation statement. Schema references, $ref, and schema paths are strictly prohibited.
 
-    Write scenarios in simple English only.
+Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
 
+Write scenarios in simple English only.
 
-    Rules:
-    Do not assume anything not provided.
-    Do not modify the method and endpoint provided in user prompt.
-    Do not use code, assertions, operators (>, <, ===, etc.).
-    Do not fabricate fields, endpoints, or responses.
-    Describe data conceptually only.
-    In each scenario that you generated above ,you must describe how API should behave as outcome of scenario.The behaviour should indicate whether api should pass and fail. Use your own logic in determining whether the API should pass or fail.
-    Modify query parameters only if required and supported.
-    Input schema changes allowed only for POST/PUT APIs.
-    Do not include numbers, prefixes, labels, or category names.
-    Each scenario must be a single-line sentence.
-    Do not insert newline characters inside a scenario.
+Rules:
+Do not assume anything not provided.
+Do not modify the method and endpoint provided in user prompt.
+You must generate scenarios on both input and output schema with clear distribution.
+Do not use code, assertions, operators (>, <, ===, etc.).
+Do not fabricate fields, endpoints, or responses.
+You must explicitly identify and validate nested fields in the output schema if present.
+Describe data conceptually only.
+In each scenario, clearly describe how the API should behave and whether it should pass or fail.
+Status code must logically match the expected outcome based on the scenario.
+Modify query parameters only if required and supported.
+Input schema changes allowed only for POST/PUT APIs.
+Do not include numbers, prefixes, labels, or category names.
+Each scenario must be a single-line sentence.
+Do not insert newline characters inside a scenario.
+Output schema validation scenarios must explicitly describe response contract validation behavior.
 
-    Output must be valid JSON only in this format:
+Output must be valid JSON only in this format:
 
-    [
-    {"description":"Scenario description here",
-    "outcome":"API should pass or fail",
-    "status":proper status code based on outcome and description"
-    },
+[
+{"description":"Scenario description here",
+"outcome":"API should pass or fail",
+"status":proper status code based on outcome and description"
+},
 
-    {"description":"Another Scenario description here",
-    "outcome":"API should pass or fail",
-    "status":proper status code based on outcome and description"
-    },
+{"description":"Another Scenario description here",
+"outcome":"API should pass or fail",
+"status":proper status code based on outcome and description"
+}
+]
 
-    ]
-
-    Return ONLY the JSON array.
-    No explanation.
-    No markdown.
-    No extra text.
-
+Return ONLY the JSON array.
+No explanation.
+No markdown.
+No extra text.
 """
     )
     user_prompt = HumanMessage(

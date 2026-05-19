@@ -640,3 +640,123 @@ generate test case
     No explanations.
     Name tests: test_case_1, test_case_2, ...
     Output ONLY Python code (no markdown/text)
+
+
+
+    test-scenarios working prompt :
+   Use only:
+        API Description, Method, Endpoint, Input Schema, Output Schema, More Info provided in user_prompt.
+
+        Generate multiple test scenarios ensuring good coverage of different cases. Generate multiplescenarios on different categories (schema validation, contract validation, negative cases, boundary cases, and other relevant scenarios derived strictly from the provided information).
+
+        Use More Info provided in user-prompt  to derive additional edge cases and test scenarios.
+
+        Input modification rules: Query parameters may be modified freely. Input schema may be modified only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior.
+
+        Strict assertion rules: No keyword-only assertions are allowed. Every assertion must be a complete executable validation statement. Schema references, $ref, and schema paths are strictly prohibited.
+
+        Output Schema rules: Output Schema is a strict contract. No missing fields, no extra fields, exact field names (case-sensitive), and exact nesting must be preserved. Make sure to identify the nested fields in the output if present. Schema validation must include strict checks for missing fields, extra fields, and type mismatches.
+
+        Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
+
+        You must generate scenarios on both input and output schema.
+
+        Write scenarios in simple English only.
+
+
+        Rules:
+        Do not assume anything not provided.
+        Do not modify the method and endpoint provided in user prompt.
+        You must generate scenarios on both input and output schema.
+        Do not use code, assertions, operators (>, <, ===, etc.).
+        Do not fabricate fields, endpoints, or responses.
+        You must identify the nested fields in the outschema if present.
+        Describe data conceptually only.
+        In each scenario that you generated above ,you must describe how API should behave as outcome of scenario.The behaviour should indicate whether api should pass and fail. Use your own logic in determining whether the API should pass or fail.
+        Modify query parameters only if required and supported.
+        Input schema changes allowed only for POST/PUT APIs.
+        Do not include numbers, prefixes, labels, or category names.
+        Each scenario must be a single-line sentence.
+        Do not insert newline characters inside a scenario.
+        Check and validate the nested fields in the output schema if present.
+        Output must be valid JSON only in this format:
+
+        [
+        {"description":"Scenario description here",
+        "outcome":"API should pass or fail",
+        "status":proper status code based on outcome and description"
+        },
+
+        {"description":"Another Scenario description here",
+        "outcome":"API should pass or fail",
+        "status":proper status code based on outcome and description"
+        },
+
+        ]
+
+    Return ONLY the JSON array.
+    No explanation.
+    No markdown.
+    No extra text.
+
+""" 
+
+
+latest working prompt ":
+
+ Use only:API Description, Method, Endpoint, Input Schema, Output Schema, More Info provided in user_prompt.
+
+        Use More Info provided in user-prompt  to derive additional edge cases and test scenarios.
+
+        Generate test scenarios by modifying the input schema only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior.
+
+        Strict assertion rules: No keyword-only assertions are allowed. Every assertion must be a complete executable validation statement. Schema references, $ref, and schema paths are strictly prohibited.
+
+        Generate test scenarios on output schema rules. Output Schema is a strict contract . This includes No missing fields, no extra fields, exact field names (case-sensitive) in the output schema.
+
+        Make sure to identify the nested fields in the output if present and generate separate scenarios for them. 
+
+        Generate test scenarios on schema validation. This includes strict checks for missing fields, extra fields, and type mismatches.
+
+        Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
+
+        You must generate scenarios on both input and output schema.
+
+        Write scenarios in simple English only.
+
+
+        Rules:
+        Do not assume anything not provided.
+        Do not modify the method and endpoint provided in user prompt.
+        You must generate scenarios on both input and output schema.
+        Do not use code, assertions, operators (>, <, ===, etc.).
+        Do not fabricate fields, endpoints, or responses.
+        You must identify the nested fields in the outschema if present.
+        Describe data conceptually only.
+        In each scenario that you generated above ,you must describe how API should behave as outcome of scenario.The behaviour should indicate whether api should pass and fail. Use your own logic in determining whether the API should pass or fail.
+        Modify query parameters only if required and supported.
+        Input schema changes allowed only for POST/PUT APIs.
+        Do not include numbers, prefixes, labels, or category names.
+        Each scenario must be a single-line sentence.
+        Do not insert newline characters inside a scenario.
+        Check and validate the nested fields in the output schema if present.
+        Output must be valid JSON only in this format:
+
+        [
+        {"description":"Scenario description here",
+        "outcome":"API should pass or fail",
+        "status":proper status code based on outcome and description"
+        },
+
+        {"description":"Another Scenario description here",
+        "outcome":"API should pass or fail",
+        "status":proper status code based on outcome and description"
+        },
+
+        ]
+
+    Return ONLY the JSON array.
+    No explanation.
+    No markdown.
+    No extra text.
+

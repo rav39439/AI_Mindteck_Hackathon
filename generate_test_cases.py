@@ -63,11 +63,7 @@ def generate_test_cases(
 
     TEST SCENARIOS:
     {json.dumps(test_scenarios, indent=2)}
-
-
 """
-
-
     )
 
     response = llm.invoke([system_prompt, user_prompt])
