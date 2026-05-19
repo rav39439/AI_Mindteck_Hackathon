@@ -45,6 +45,8 @@ if __name__ == "__main__":
     more_info="You have to make sure that all the fields in nested field 'user' is validated and present. Also make sure that no fields in output schema is missing"
 
     testscenarios=generate_test_scenarios(endpoint=endpoint, method=method, function_description=description, input_schema=input_schema, output_schema=output_schema, query_parameters=query_parameters, more_info=more_info)
+
+    print(testscenarios)
     
     test_code = generate_test_cases(
         endpoint=endpoint,
