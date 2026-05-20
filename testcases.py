@@ -1,154 +1,264 @@
 import requests
 import json
-import sys
-import os
-
-def test_case_1():
-    
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'body': "This makes all sense to me!",
-            'postId': 3,
-            'userId': 5
-        })
-        assert response.status_code == 201
-        print("Testcase 1 passed")
-    except Exception as e:
-        print(f"Testcase 1 failed: {e}")
-
-def test_case_2():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'body': "",
-            'postId': 3,
-            'userId': 5
-        })
-        assert response.status_code == 400
-        print("Testcase 2 passed")
-    except Exception as e:
-        print(f"Testcase 2 failed: {e}")
-
-def test_case_3():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'body': "This makes all sense to me!",
-            'postId': '3',
-            'userId': 5
-        })
-        assert response.status_code == 400
-        print("Testcase 3 passed")
-    except Exception as e:
-        print(f"Testcase 3 failed: {e}")
-
-def test_case_4():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'body': "This makes all sense to me!",
-            'postId': 3,
-            'userId': 0
-        })
-        assert response.status_code == 400
-        print("Testcase 4 passed")
-    except Exception as e:
-        print(f"Testcase 4 failed: {e}")
-
-def test_case_5():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'body': "This makes all sense to me!",
-            'postId': 3,
-            'userId': 5,
-            'extraField': 'extraValue'
-        })
-        assert response.status_code == 400
-        print("Testcase 5 passed")
-    except Exception as e:
-        print(f"Testcase 5 failed: {e}")
-
-def test_case_6():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'postId': 3,
-            'userId': 5
-        })
-        assert response.status_code == 400
-        print("Testcase 6 passed")
-    except Exception as e:
-        print(f"Testcase 6 failed: {e}")
-
-def test_case_7():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'postId': 3,
-            'userId': 5,
-            'userid': '123'
-        })
-        assert response.status_code == 400
-        print("Testcase 7 passed")
-    except Exception as e:
-        print(f"Testcase 7 failed: {e}")
-
-def test_case_8():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'postId': 3,
-            'userId': 5,
-            'username': ''
-        })
-        assert response.status_code == 400
-        print("Testcase 8 passed")
-    except Exception as e:
-        print(f"Testcase 8 failed: {e}")
-
-def test_case_9():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'postId': 3,
-            'userId': 5,
-            'fullName': 'a'
-        })
-        assert response.status_code == 400
-        print("Testcase 9 passed")
-    except Exception as e:
-        print(f"Testcase 9 failed: {e}")
-
-def test_case_10():
-    try:
-        response = requests.post('https://dummyjson.com/comments/add', json={
-            'postId': 3,
-            'userId': 5,
-            'id': '123'
-        })
-        assert response.status_code == 400
-        print("Testcase 10 passed")
-    except Exception as e:
-        print(f"Testcase 10 failed: {e}")
-
+import unittest
 
 def run_all_tests():
-    test_case_1()
-    test_case_2()
-    test_case_3()
-    test_case_4()
-    test_case_5()
-    test_case_6()
-    test_case_7()
-    test_case_8()
-    test_case_9()
-    test_case_10()
+    test_cases = [
+        # Test with valid user data
+        {
+            'name': 'test_case_1',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': 5
+            },
+            'output_schema': {
+                'id': 341,
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'user': {
+                    'id': 5,
+                    'username': "emmaj",
+                    'fullName': "Emma Miller"
+                }
+            },
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 201
+        },
+        # Test with missing user id
+        {
+            'name': 'test_case_2',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': None
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Test with invalid user id
+        {
+            'name': 'test_case_3',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': -1
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Test with empty user name
+        {
+            'name': 'test_case_4',
+            'input_schema': {
+                'body': "",
+                'postId': 3,
+                'userId': 5
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Test with empty user email
+        {
+            'name': 'test_case_5',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': 5
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Test with valid comment text
+        {
+            'name': 'test_case_6',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': 5
+            },
+            'output_schema': {
+                'id': 341,
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'user': {
+                    'id': 5,
+                    'username': "emmaj",
+                    'fullName': "Emma Miller"
+                }
+            },
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 201
+        },
+        # Test with missing comment text
+        {
+            'name': 'test_case_7',
+            'input_schema': {
+                'body': "",
+                'postId': 3,
+                'userId': 5
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Test with invalid comment text
+        {
+            'name': 'test_case_8',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': 5
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Missing required fields in the request body
+        {
+            'name': 'test_case_9',
+            'input_schema': {
+                'postId': 3,
+                'userId': 5
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Extra field 'created' not present in output schema
+        {
+            'name': 'test_case_10',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': 5,
+                'title': 'Test Title'
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Incorrect data type for 'postId' (should be integer)
+        {
+            'name': 'test_case_11',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': '3',
+                'userId': 5
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Invalid value for 'postId' (out of range)
+        {
+            'name': 'test_case_12',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': -1,
+                'userId': 5
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Incorrect data type for 'userId' (should be integer)
+        {
+            'name': 'test_case_13',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': '5'
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Invalid value for 'userId' (out of range)
+        {
+            'name': 'test_case_14',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': -1
+            },
+            'output_schema': {},
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 400
+        },
+        # Boundary value for 'postId' (minimum value is 1)
+        {
+            'name': 'test_case_15',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 1,
+                'userId': 5
+            },
+            'output_schema': {
+                'id': 341,
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'user': {
+                    'id': 5,
+                    'username': "emmaj",
+                    'fullName': "Emma Miller"
+                }
+            },
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 201
+        },
+        # Boundary value for 'userId' (minimum value is 1)
+        {
+            'name': 'test_case_16',
+            'input_schema': {
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'userId': 1
+            },
+            'output_schema': {
+                'id': 341,
+                'body': "This makes all sense to me!",
+                'postId': 3,
+                'user': {
+                    'id': 5,
+                    'username': "emmaj",
+                    'fullName': "Emma Miller"
+                }
+            },
+            'method': 'POST',
+            'endpoint': 'https://dummyjson.com/comments/add',
+            'status_code': 201
+        },
+    ]
 
-    # tests = globals().copy()
-    # for key in list(tests.keys()):
-    #     if key.startswith('test_'):
-    #         del tests[key]
-    
-    # test_functions = [key for key in tests.keys() if key.startswith('test_')]
-    # try:
-    #     for func in test_functions:
-    #         func()
-    #     print("All tests passed")
-    # except Exception as e:
-    #     print(f"All tests failed: {e}")
+    def test_post_comments(self):
+        for input_schema in self.input_schemas:
+            try:
+                response = requests.post('https://dummyjson.com/comments/add', json=input_schema)
+                assert response.status_code == input_schema['status_code']
+            except AssertionError as e:
+                print(f"Test failed: {e}")
+                continue
 
-if __name__ == "__main__":
-    run_all_tests()
+
+    if __name__ == '__main__':
+        unittest.main()

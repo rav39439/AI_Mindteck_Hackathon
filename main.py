@@ -1,5 +1,5 @@
 
-from generate_test_scenarios import generate_test_scenarios
+from generate_test_scenarios import generate_test_scenarios_input_schema,generate_test_scenarios_on_output_schema,generate_test_scenarios_more_information
 from generate_test_cases import generate_test_cases
 from add_code_execution import add_code_execution
 from code_corrector import code_corrector
@@ -18,6 +18,59 @@ def replace_pytest_fail(code: str) -> str:
     """
     updated_code=code.replace("raise Exception", 'print')
     return code.replace("pytest.fail", 'print')
+
+
+import asyncio
+
+# Wrapper to run blocking functions asynchronously
+async def run_generate_test_scenarios(endpoint, method, description,
+                                      input_schema, output_schema,
+                                      query_parameters, more_info):
+
+    task1 = asyncio.to_thread(
+        generate_test_scenarios_more_information,
+        endpoint=endpoint,
+        method=method,
+        function_description=description,
+        input_schema=input_schema,
+        output_schema=output_schema,
+        query_parameters=query_parameters,
+        more_info=more_info
+    )
+
+    task2 = asyncio.to_thread(
+        generate_test_scenarios_on_output_schema,
+        endpoint=endpoint,
+        method=method,
+        function_description=description,
+        input_schema=input_schema,
+        output_schema=output_schema,
+        query_parameters=query_parameters,
+        more_info=more_info
+    )
+
+    task3 = asyncio.to_thread(
+        generate_test_scenarios_input_schema,
+        endpoint=endpoint,
+        method=method,
+        function_description=description,
+        input_schema=input_schema,
+        output_schema=output_schema,
+        query_parameters=query_parameters,
+        more_info=more_info
+    )
+
+    # Run all concurrently
+    testscenarios1, testscenarios2, testscenarios3 = await asyncio.gather(
+        task1,
+        task2,
+        task3
+    )
+
+    
+
+    return testscenarios1, testscenarios2, testscenarios3
+
 if __name__ == "__main__":
 
     endpoint = "https://dummyjson.com/comments/add"
@@ -41,38 +94,63 @@ if __name__ == "__main__":
     
 
 
-    query_parameters = ["userid"]
+#     query_parameters = ["userid"]
 
-    more_info="You have to make sure that all the fields in nested field 'user' is validated and present. Make sure that all the fields in nested field 'user' is validated and present."
+#     more_info="You have to make sure that all the fields in nested field 'user' is validated and present. Make sure that all the fields in nested field 'user' is validated and present."
 
-    testscenarios=generate_test_scenarios(endpoint=endpoint, method=method, function_description=description, input_schema=input_schema, output_schema=output_schema, query_parameters=query_parameters, more_info=more_info)
+#     testscenarios1, testscenarios2, testscenarios3 = asyncio.run(
+#     run_generate_test_scenarios(
+#         endpoint=endpoint,
+#         method=method,
+#         description=description,
+#         input_schema=input_schema,
+#         output_schema=output_schema,
+#         query_parameters=query_parameters,
+#         more_info=more_info
+#     )
+# )
 
-    print(testscenarios)
+
+#     merged_test_scenarios = (
+#     (testscenarios1 or []) +
+#     (testscenarios2 or []) +
+#     (testscenarios3 or [])
+# )    
+   
+#     print(merged_test_scenarios)
+#     print(len(merged_test_scenarios))
+
     
-    test_code = generate_test_cases(
-        endpoint=endpoint,
-        method=method,
-        function_description=description,
-        input_schema=input_schema,
-        output_schema=output_schema,
-        query_parameters=query_parameters,
-        more_info=more_info,
-        test_scenarios=testscenarios
-    )
+#     test_code = generate_test_cases(
+#         endpoint=endpoint,
+#         method=method,
+#         function_description=description,
+#         input_schema=input_schema,
+#         output_schema=output_schema,
+#         query_parameters=query_parameters,
+#         more_info=more_info,
+#         test_scenarios=merged_test_scenarios
+#     )
 
-    print("test cases generated")
+#     print("test cases generated")
 
-    print(test_code)
+#     print(test_code)
 
-    updated_code=replace_pytest_fail(test_code)
+#     updated_code=replace_pytest_fail(test_code)
 
-    corrected_code=code_corrector(test_code)
+#     corrected_code=code_corrector(test_code)
 
-    updated_code=replace_pytest_fail(corrected_code)
+#     updated_code=replace_pytest_fail(corrected_code)
 
-    print("code corrected")
-    pcode=extract_python_code(updated_code)
+#     print("code corrected")
+#     pcode=extract_python_code(updated_code)
 
-    write_and_run_test_file(pcode)
+#     write_and_run_test_file(pcode)
 
-    # run_test_file()
+    run_test_file()
+
+
+
+
+
+# Run the async function
