@@ -16,7 +16,8 @@ def replace_pytest_fail(code: str) -> str:
     Returns:
         str: Modified code
     """
-    return code.replace("pytest.fail()", 'print("testcase failed")')
+    updated_code=code.replace("raise Exception", 'print')
+    return code.replace("pytest.fail", 'print')
 if __name__ == "__main__":
 
     endpoint = "https://dummyjson.com/comments/add"
@@ -42,7 +43,7 @@ if __name__ == "__main__":
 
     query_parameters = ["userid"]
 
-    more_info="You have to make sure that all the fields in nested field 'user' is validated and present. Also make sure that no fields in output schema is missing"
+    more_info="You have to make sure that all the fields in nested field 'user' is validated and present. Make sure that all the fields in nested field 'user' is validated and present."
 
     testscenarios=generate_test_scenarios(endpoint=endpoint, method=method, function_description=description, input_schema=input_schema, output_schema=output_schema, query_parameters=query_parameters, more_info=more_info)
 

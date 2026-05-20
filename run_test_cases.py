@@ -8,6 +8,8 @@ def write_and_run_test_file(code: str, filename: str = "testcases.py"):
     Writes generated test code to file and executes it.
     """
 
+    loop=1
+
     with open(filename, "w", encoding="utf-8") as f:
         f.write(code)
 
@@ -22,13 +24,22 @@ def write_and_run_test_file(code: str, filename: str = "testcases.py"):
 
         print("===== STDOUT =====")
         print(result.stdout)
-
-
         if result.stderr:
-            print("===== STDERR =====")
-            # print(result.stderr)
+            print("===== STDERR =====")           # print(result.stderr)
             print("\n[INFO] Error detected. Sending to LLM for correction...\n")
-            handle_error_and_correct(code, result.stderr)
+            loop+=1
+            try:
+                handle_error_and_correct(code, result.stderr)
+                result = subprocess.run(
+                    [sys.executable, filename],
+                    capture_output=True,
+                    text=True
+                )
+
+                print("===== STDOUT =====")
+                print(result.stdout)
+            except Exception as e:
+                print(f"[ERROR] Execution failed: {e}")
 
     except Exception as e:
         print(f"[ERROR] Execution failed: {e}")

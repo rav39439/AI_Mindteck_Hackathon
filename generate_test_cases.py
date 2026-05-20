@@ -35,8 +35,8 @@ def generate_test_cases(
     STRICT RULES:
 
     Each test uses try/except
-    except: print(f"Error: {e}") then raise, also print one line mentioning name of testcase failed
-    success: print("Testcase passed")
+    except: print(f"Testcase{name} failed") then raise, also print one line mentioning name of testcase failed
+    success: print("Testcase{name} passed")
     Call API and use response.json() only after status_code check (e.g., 200)
     Do NOT assume/fabricate endpoints, URLs, query params, or responses
     Use ONLY given Endpoint (no modifications or additions)
