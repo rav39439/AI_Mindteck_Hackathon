@@ -5,104 +5,105 @@ import re
 from llm import llm,llm_scenarios
 
 
-# def generate_test_scenarios(
-#     endpoint: str,
-#     method: str,
-#     function_description: str,
-#     input_schema,
-#     output_schema,
-#     query_parameters=None,
-#     more_info: str = ""
-# ):
-#     if query_parameters is None:
-#         query_parameters = []
+def generate_test_scenarios(
+    endpoint: str,
+    method: str,
+    function_description: str,
+    input_schema,
+    output_schema,
+    query_parameters=None,
+    more_info: str = ""
+):
+    if query_parameters is None:
+        query_parameters = []
 
-#     system_prompt = SystemMessage(
-#         content="""
-#        Use only: API Description, Method, Endpoint, Input Schema, Output Schema, More Info provided in user_prompt.
+    system_prompt = SystemMessage(
+        content="""
+       Use only: API Description, Method, Endpoint, Input Schema, Output Schema, More Info provided in user_prompt.
 
-# Use More Info provided in user-prompt to derive additional edge cases and test scenarios.
+Use More Info provided in user-prompt to derive additional edge cases and testcases.
 
-# You must generate comprehensive test scenarios covering BOTH input schema validation and output schema contract validation. Neither schema may be ignored.
+You must generate comprehensive testcases covering BOTH input schema validation and output schema contract validation. Neither schema may be ignored.
 
-# Generate scenarios by modifying the input schema only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior. Include scenarios for missing required fields, extra unexpected fields, incorrect data types, invalid values, boundary values, and query parameter variations if supported.
+Generate testcases by modifying the input schema only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior. Include scenarios for missing required fields, extra unexpected fields, incorrect data types, invalid values, boundary values, and query parameter variations if supported.
 
-# Generate scenarios on output schema  that validate the API response structure including missing fields, extra fields, incorrect field names (case-sensitive), incorrect data types, incorrect nesting, and contract mismatches. If nested fields are present, you must explicitly identify them and generate separate scenarios validating each nested object and its internal fields.
+Generate testcases on output schema  that validate the API response structure including missing fields, extra fields, incorrect field names (case-sensitive), incorrect data types, incorrect nesting, and contract mismatches. If nested fields are present, you must explicitly identify them and generate separate scenarios validating each nested object and its internal fields.
 
-# You must generate as many scenarios as possible based on input schema and output schema.
+You must generate as many testcases as possible based on input schema and output schema.
 
-# Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
+Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
 
-# Write scenarios in simple English only.
+Write testcases in simple English only.
 
-# Rules:
-# Do not assume anything not provided.
-# Do not modify the method and endpoint provided in user prompt.
-# You must generate scenarios on both input and output schema with clear distribution.
-# You must generate scenarios on "More Info" in the user prompt.
-# You must explicitly identify and validate nested fields in the output schema if present.
-# In each scenario, clearly describe how the API should behave and whether it should pass or fail.
-# Status code must logically match the expected outcome based on the scenario.
-# Modify query parameters only if required and supported.
-# Input schema changes allowed only for POST/PUT APIs.
+Rules:
+Do not assume anything not provided.
+Do not modify the method and endpoint provided in user prompt.
+You must generate testcases on both input and output schema with clear distribution.
+You must generate testcases on "More Info" in the user prompt.
+You must explicitly identify and validate nested fields in the output schema if present.
+In each testcases, clearly describe how the API should behave and whether it should pass or fail.
+Status code must logically match the expected outcome based on the testcases.
+Modify query parameters only if required and supported.
+Input schema changes allowed only for POST/PUT APIs.
 
-# Output must be valid JSON only in this format:
+Output must be valid JSON only in this format:
 
-# [
-# {"description":"Scenario description here",
-# "outcome":"API should pass or fail",
-# "status":proper status code based on outcome and description"
-# },
+[
+{"description":"testcase description here",
+"outcome":"API should pass or fail",
+"status":proper status code based on outcome and description"
+},
 
-# {"description":"Another Scenario description here",
-# "outcome":"API should pass or fail",
-# "status":proper status code based on outcome and description"
-# }
-# ]
+{
+"description":"Another testcase description here",
+"outcome":"API should pass or fail",
+"status":proper status code based on outcome and description"
+}
+]
 
-# Return ONLY the JSON array.
-# No explanation.
-# No markdown.
-# No extra text.
-# """
-#     )
-#     user_prompt = HumanMessage(
-#         content=f"""
-#     Endpoint: {endpoint}
-#     Method: {method}
+Return ONLY the JSON array.
+No explanation.
+No markdown.
+No extra text.
+"""
+    )
+    user_prompt = HumanMessage(
+        content=f"""
+    Endpoint: {endpoint}
+    Method: {method}
 
-#     Description:
-#     {function_description}
+    Description:
+    {function_description}
 
-#     Input Schema:
-#     {json.dumps(input_schema, indent=2)}
+    Input Schema:
+    {json.dumps(input_schema, indent=2)}
 
-#     Output Schema:
-#     {json.dumps(output_schema, indent=2)}
+    Output Schema:
+    {json.dumps(output_schema, indent=2)}
 
-#     Query Parameters:
-#     {json.dumps(query_parameters, indent=2)}
+    Query Parameters:
+    {json.dumps(query_parameters, indent=2)}
 
-#     More Info:
-#     {more_info}
-# """
-#     )
+    More Info:
+    {more_info}
+"""
+    )
 
-#     response = llm_scenarios.invoke([system_prompt, user_prompt])
+    response = llm_scenarios.invoke([system_prompt, user_prompt])
 
-#     raw_output = response.content.strip()
+    raw_output = response.content.strip()
 
-#     # Clean accidental markdown if present
-#     raw_output = raw_output.replace("```json", "").replace("```", "").strip()
+    # Clean accidental markdown if present
+    raw_output = raw_output.replace("```json", "").replace("```", "").strip()
 
-#     try:
-#         parsed_json = json.loads(raw_output)
-#     except json.JSONDecodeError:
-#         print("Invalid JSON returned by LLM:")
-#         print(raw_output)
-#         raise
+    try:
+        parsed_json = json.loads(raw_output)
+    except json.JSONDecodeError:
+        print("Invalid JSON returned by LLM:")
+        print(raw_output)
+        raise
 
-#     return parsed_json
+    return parsed_json
 
 
 
@@ -121,28 +122,32 @@ def generate_test_scenarios_more_information(
 
     system_prompt = SystemMessage(
         content="""
-       Use only: "Description", "Method", "Endpoint" and "More Info" provided in user_prompt.
+       Use only: "Description", "Method",Input Schema, Output Schema, "Endpoint" and "More Info" provided in user_prompt.
 
-Use "More Info" provided in user-prompt to derive all possible test scenarios.
+"More Info" in user prompt is the primary source of test cases generation.
 
-Write scenarios in simple English only.
+"Analyze the {more_info} provided in user prompt before generating the testcases."
+
+use Input Schema, Output Schema, Method, Endpoint only as supporting information in generating the test cases.
+
+Write test cases in simple English only.
 
 Rules:
 Do not assume anything not provided.
 Do not modify the method and endpoint provided in user prompt.
-You must generate scenarios on "More Info" in the user prompt.
+You must generate test cases on "More Info" in the user prompt.
 In each scenario, clearly describe how the API should behave and whether it should pass or fail.
 Status code must logically match the expected outcome based on the scenario.
 Modify query parameters only if required and supported.
 Output must be valid JSON only in this format:
 
 [
-{"description":"Scenario description here",
+{"description":"test case description here",
 "outcome":"API should pass or fail",
 "status":proper status code based on outcome and description"
 },
 
-{"description":"Another Scenario description here",
+{"description":"Another test case description here",
 "outcome":"API should pass or fail",
 "status":proper status code based on outcome and description"
 }
@@ -164,6 +169,12 @@ No extra text.
 
     Query Parameters:
     {json.dumps(query_parameters, indent=2)}
+
+    Input Schema:
+    {json.dumps(input_schema, indent=2)}
+
+    Output Schema:
+    {json.dumps(output_schema, indent=2)}
 
     More Info:
     {more_info}
@@ -194,9 +205,8 @@ def generate_test_scenarios_input_schema(
     method: str,
     function_description: str,
     input_schema,
-    output_schema,
     query_parameters=None,
-    more_info: str = ""
+   
 ):
     if query_parameters is None:
         query_parameters = []
@@ -205,21 +215,21 @@ def generate_test_scenarios_input_schema(
         content="""
        Use only:"Description", "Method", "Endpoint", "Input Schema" provided in user_prompt.
 
-Generate scenarios by modifying the input schema only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior. Include scenarios for missing required fields, extra unexpected fields, incorrect data types, invalid values, boundary values, and query parameter variations if supported.
+Generate test cases by modifying the input schema only for POST/PUT requests (add, remove, or update fields). All modifications must remain realistic and consistent with API behavior. Include scenarios for missing required fields, extra unexpected fields, incorrect data types, invalid values, boundary values, and query parameter variations if supported.
 
-Also Generate scenarios on input schema validation.
+Also Generate test cases on input schema validation.
 
-You must generate as many scenarios as possible based on input schema.
+You must generate as many test cases as possible based on input schema.
 
 Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
 
-Write scenarios in simple English only.
+Write test cases in simple English only.
 
 Rules:
 Do not assume anything not provided.
 Do not modify the method and endpoint provided in user prompt.
 You must generate scenarios only input schema with clear distribution.
-In each scenario, clearly describe how the API should behave and whether it should pass or fail.
+In each test case, clearly describe how the API should behave and whether it should pass or fail.
 Status code must logically match the expected outcome based on the scenario.
 Modify query parameters only if required and supported.
 Input schema changes allowed only for POST/PUT APIs.
@@ -227,12 +237,12 @@ Input schema changes allowed only for POST/PUT APIs.
 Output must be valid JSON only in this format:
 
 [
-{"description":"Scenario description here",
+{"description":"test case description here",
 "outcome":"API should pass or fail",
 "status":proper status code based on outcome and description"
 },
 
-{"description":"Another Scenario description here",
+{"description":"Another test case description here",
 "outcome":"API should pass or fail",
 "status":proper status code based on outcome and description"
 }
@@ -284,10 +294,8 @@ def generate_test_scenarios_on_output_schema(
     endpoint: str,
     method: str,
     function_description: str,
-    input_schema,
     output_schema,
     query_parameters=None,
-    more_info: str = ""
 ):
     if query_parameters is None:
         query_parameters = []
@@ -296,34 +304,34 @@ def generate_test_scenarios_on_output_schema(
         content="""
        Use only: "Description", "Method", "Endpoint" and "Output Schema" provided in user_prompt.
 
-You must generate comprehensive test scenarios covering ONLY on output schema contract validation.
+You must generate comprehensive test cases covering ONLY on output schema.
 
-Generate scenarios on output schema  that validate the API response structure including missing fields, extra fields, incorrect field names (case-sensitive), incorrect data types, incorrect nesting, and contract mismatches. If nested fields are present, you must explicitly identify them and generate separate scenarios validating each nested object and its internal fields.
+Generate test cases on output schema  that validate the API response structure including missing fields, extra fields, incorrect field names (case-sensitive), incorrect data types, incorrect nesting, and contract mismatches. If nested fields are present, you must explicitly identify them and generate separate scenarios validating each nested object and its internal fields.
 
-You must generate as many scenarios as possible based on input schema and output schema.
+You must generate as many test cases as possible based on output schema.
 
 Do not assume hidden fields, undocumented rules, schema definitions, or implicit validations.
 
-Write scenarios in simple English only.
+Write test cases in simple English only.
 
 Rules:
 Do not assume anything not provided.
 Do not modify the method and endpoint provided in user prompt.
-You must generate scenarios on output schema with clear distribution.
+You must generate test cases on output schema with clear distribution.
 You must explicitly identify and validate nested fields in the output schema if present.
-In each scenario, clearly describe how the API should behave and whether it should pass or fail.
-Status code must logically match the expected outcome based on the scenario.
+In each test case, clearly describe how the API should behave and whether it should pass or fail.
+Status code must logically match the expected outcome based on the test case.
 Modify query parameters only if required and supported.
 
 Output must be valid JSON only in this format:
 
 [
-{"description":"Scenario description here",
+{"description":"test case description here",
 "outcome":"API should pass or fail",
 "status":proper status code based on outcome and description"
 },
 
-{"description":"Another Scenario description here",
+{"description":"Another test case description here",
 "outcome":"API should pass or fail",
 "status":proper status code based on outcome and description"
 }

@@ -1,0 +1,69 @@
+#     testscenarios1, testscenarios2, testscenarios3 = asyncio.run(
+#     run_generate_test_scenarios(
+#         endpoint=endpoint,
+#         method=method,
+#         description=description,
+#         input_schema=input_schema,
+#         output_schema=output_schema,
+#         query_parameters=query_parameters,
+#         more_info=more_info
+#     )
+# )
+
+
+#     merged_test_scenarios = (
+#     (testscenarios1 or []) +
+#     (testscenarios2 or []) +
+#     (testscenarios3 or [])
+# )    
+   
+#     print(merged_test_scenarios)
+#     print(len(merged_test_scenarios))
+
+
+
+
+# Wrapper to run blocking functions asynchronously
+# async def run_generate_test_scenarios(endpoint, method, description,
+#                                       input_schema, output_schema,
+#                                       query_parameters, more_info):
+
+#     task1 = asyncio.to_thread(
+#         generate_test_scenarios_more_information,
+#         endpoint=endpoint,
+#         method=method,
+#         function_description=description,
+#         input_schema=input_schema,
+#         output_schema=output_schema,
+#         query_parameters=query_parameters,
+#         more_info=more_info
+#     )
+
+#     task2 = asyncio.to_thread(
+#         generate_test_scenarios_on_output_schema,
+#         endpoint=endpoint,
+#         method=method,
+#         function_description=description,
+#         input_schema=input_schema,
+#         output_schema=output_schema,
+#         query_parameters=query_parameters,
+#         more_info=more_info
+#     )
+
+#     task3 = asyncio.to_thread(
+#         generate_test_scenarios_input_schema,
+#         endpoint=endpoint,
+#         method=method,
+#         function_description=description,
+#         input_schema=input_schema,
+#         output_schema=output_schema,
+#         query_parameters=query_parameters,
+#         more_info=more_info
+#     )
+
+#     # Run all concurrently
+#     testscenarios1, testscenarios2, testscenarios3 = await asyncio.gather(
+#         task1,
+#         task2,
+#         task3
+#     )
