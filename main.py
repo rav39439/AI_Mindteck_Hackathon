@@ -5,7 +5,7 @@ from add_code_execution import add_code_execution
 from code_corrector import code_corrector
 from helper import extract_python_code
 from run_test_cases import write_and_run_test_file,run_test_file
-from analyze_final_results import analyze_result
+from analyze_final_results import merge_testcase_results,extract_testcase_results,map_testcases_to_scenarios, generate_final_test_report,clean_llm_json_output        
 import asyncio
 
 def replace_pytest_fail(code: str) -> str:
@@ -212,12 +212,17 @@ if __name__ == "__main__":
     )
     print(testscenarios)
     code_generated=isalltestexecution(testscenarios)
-    result=write_run_test_file_corr(code_generated)
+    stdresult=write_run_test_file_corr(code_generated)
+    mapped_scenarios=map_testcases_to_scenarios(code_generated,testscenarios)
     print("fianl result")
-    print(result)
+    # extracted_results=extract_testcase_results(stdresult)
+    mapped_scenarios=generate_final_test_report(mapped_scenarios,stdresult)   
+    clenaed=clean_llm_json_output (mapped_scenarios)
 
-    analysis=analyze_result(result,testscenarios)
-    print(analysis)
+    print(mapped_scenarios)
+
+    # analysis=analyze_result(result,testscenarios)
+    # print(analysis)
 
 #---------------------------------------------------------------------------------------------
     # run_test_file()
@@ -228,129 +233,129 @@ if __name__ == "__main__":
 
 ## frontend/templates/index.html
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
-from fastapi.templating import Jinja2Templates
-from fastapi import Request
+# from fastapi import FastAPI
+# from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.responses import HTMLResponse
+# from fastapi.staticfiles import StaticFiles
+# from pydantic import BaseModel
+# from fastapi.templating import Jinja2Templates
+# from fastapi import Request
 
-app = FastAPI()
+# app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
-templates = Jinja2Templates(directory="templates")
-
-
-class ScenarioConfig(BaseModel):
-    scenario_type: str
-    method: str
-    execution_type: str
-    functionality: str
-    token: str
+# templates = Jinja2Templates(directory="templates")
 
 
-class ScenarioRequest(BaseModel):
-    scenarios: str
+# class ScenarioConfig(BaseModel):
+#     scenario_type: str
+#     method: str
+#     execution_type: str
+#     functionality: str
+#     token: str
 
 
-class TestcaseRequest(BaseModel):
-    testcases: str
+# class ScenarioRequest(BaseModel):
+#     scenarios: str
 
 
-class ResultRequest(BaseModel):
-    results: str
+# class TestcaseRequest(BaseModel):
+#     testcases: str
 
 
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+# class ResultRequest(BaseModel):
+#     results: str
 
 
-@app.post("/submit-config")
-async def submit_config(data: ScenarioConfig):
-
-    scenarios = f"""
-Generated scenarios based on:
-
-Scenario Type: {data.scenario_type}
-Method: {data.method}
-Execution Type: {data.execution_type}
-Functionality: {data.functionality}
-"""
-
-    return {
-        "scenarios": scenarios
-    }
+# @app.get("/", response_class=HTMLResponse)
+# async def home(request: Request):
+#     return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.post("/add-scenario")
-async def add_scenario(data: ScenarioRequest):
+# @app.post("/submit-config")
+# async def submit_config(data: ScenarioConfig):
 
-    updated = data.scenarios + "\n\nNew Scenario Added"
+#     scenarios = f"""
+# Generated scenarios based on:
 
-    return {
-        "updated_scenarios": updated
-    }
+# Scenario Type: {data.scenario_type}
+# Method: {data.method}
+# Execution Type: {data.execution_type}
+# Functionality: {data.functionality}
+# """
 
-
-@app.post("/generate-testcases")
-async def generate_testcases(data: ScenarioRequest):
-
-    generated = f"""
-Generated testcases for scenarios:
-
-{data.scenarios}
-"""
-
-    return {
-        "testcases": generated
-    }
+#     return {
+#         "scenarios": scenarios
+#     }
 
 
-@app.post("/review-testcases")
-async def review_testcases(data: TestcaseRequest):
+# @app.post("/add-scenario")
+# async def add_scenario(data: ScenarioRequest):
 
-    reviewed = data.testcases + "\n\n# Reviewed and corrected by AI"
+#     updated = data.scenarios + "\n\nNew Scenario Added"
 
-    return {
-        "reviewed_code": reviewed
-    }
-
-
-@app.post("/run-testcases")
-async def run_testcases(data: TestcaseRequest):
-
-    results = """
-Testcase1 PASSED
-Testcase2 FAILED
-Testcase3 PASSED
-"""
-
-    return {
-        "results": results
-    }
+#     return {
+#         "updated_scenarios": updated
+#     }
 
 
-@app.post("/generate-report")
-async def generate_report(data: ResultRequest):
+# @app.post("/generate-testcases")
+# async def generate_testcases(data: ScenarioRequest):
 
-    report = f"""
-Execution Report Generated Successfully
+#     generated = f"""
+# Generated testcases for scenarios:
 
-Summary:
-{data.results}
-"""
+# {data.scenarios}
+# """
 
-    return {
-        "report": report
-    }
+#     return {
+#         "testcases": generated
+#     }
+
+
+# @app.post("/review-testcases")
+# async def review_testcases(data: TestcaseRequest):
+
+#     reviewed = data.testcases + "\n\n# Reviewed and corrected by AI"
+
+#     return {
+#         "reviewed_code": reviewed
+#     }
+
+
+# @app.post("/run-testcases")
+# async def run_testcases(data: TestcaseRequest):
+
+#     results = """
+# Testcase1 PASSED
+# Testcase2 FAILED
+# Testcase3 PASSED
+# """
+
+#     return {
+#         "results": results
+#     }
+
+
+# @app.post("/generate-report")
+# async def generate_report(data: ResultRequest):
+
+#     report = f"""
+# Execution Report Generated Successfully
+
+# Summary:
+# {data.results}
+# """
+
+#     return {
+#         "report": report
+#     }
 
 # Run the async function

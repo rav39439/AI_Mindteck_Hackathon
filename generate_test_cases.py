@@ -38,6 +38,12 @@ def generate_test_cases(
                                           
     In the end add a function to execute all test scripts: def run_all_tests():
                                           
+    In every test script, after receiving the API response, you MUST print the EXACT current testcase function name along with the response status code and response JSON in the following format:
+     print("<exact_testcase from {function_description}>:", {
+    "status_code": response.status_code,
+    "data": response.json()
+})
+                                          
     In run_all_tests(): if you catch any exception then make sure you continue the execution of other test cases and dont raise any error
                                           
     call the function run_all_tests() at the end
@@ -47,6 +53,11 @@ def generate_test_cases(
 
     Each test script uses try/except
     Call API and use response.json() only after status_code check (e.g., 200)
+    In every test script, after receiving the API response, you MUST print the EXACT current testcase function name along with the response status code and response JSON in the following format:
+    print("<exact testcase from {function_description} >:", {
+    "status_code": response.status_code,
+    "data": response.json()
+})
     Make sure that all the test scripts are defined as separate functions
     Do NOT assume/fabricate endpoints, URLs, query params, or responses
     Do NOT generate or include pytest, pytest.mark.parametrize, globals(), dynamic invocation, or any custom test execution/wrapper functions under any condition.
@@ -109,7 +120,7 @@ def generate_test_cases_stepwise(
 
     You are a QA engineer generating pytest test scripts for REST APIs.
 
-    Use ONLY "Test Case" in user prompt as the source of test script generation logic.
+    Use "Test Case" in user prompt as the source of test script generation logic.
                                           
     You are provided a "Test Case" in the user prompt , Analyse the description , outcome and status code and generate test script for the given test case. 
                                           
@@ -118,20 +129,26 @@ def generate_test_cases_stepwise(
     However, use Input Schema, Output Schema, Method, Endpoint only as supporting information to construct and validate the Test Script.
                                           
     Make sure that test script is a python function without any argument. If needed, use pytest to structure them properly as test function.  
+                                          
+    In every test script, after receiving the API response, you MUST print the EXACT current testcase function name along with the response status code and response JSON in the following format:
+     print("<exact_testcase from {function_description}>:", {
+    "status_code": response.status_code,
+    "data": response.json()
+})
                                                                                   
     Make sure that you remove the pytest.fail and pytest.raises from the generated code.
 
     STRICT RULES:
 
-    Each test script uses try/except
-    except: print("Testcase{index} failed") then raise, also print one line mentioning name of testcase failed
-    success: print("Testcase{index} passed")
-    Do not run the test script.
-    Call API and use response.json() only after status_code check (e.g., 200)
+    The test scripts are] defined as separate functions
     Do NOT assume/fabricate endpoints, URLs, query params, or responses
+    Do NOT generate or include pytest, pytest.mark.parametrize, globals(), dynamic invocation, or any custom test execution/wrapper functions under any condition.
+    Only generate standalone test_case_* functions plus a single run_all_tests() that explicitly calls each test case sequentially with individual try/except blocks.
     Use ONLY given Endpoint (no modifications or additions)
-    Use only real response data (keys/types/status/values)
-    pytest.fail, pytest.raises, or any pytest-based failure handling are strictly forbidden. All failures must be handled only using try/except blocks with print statements and re-raise.    
+    Validate only real response data (keys/types/status/values)
+    pytest.fail, pytest.raises, or any pytest-based failure handling are strictly forbidden. All failures must be handled only using try/except blocks with print statements and re-raise.
+    except: print(f"Testcase{name} failed") then raise, also print one line mentioning name of testcase failed
+    success: print("Testcase{name} passed")    
     Output ONLY Python code (no markdown/text)
 
 """))

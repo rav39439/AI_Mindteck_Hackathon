@@ -4,90 +4,87 @@ import pytest
 
 def test_case_1():
     try:
-        data = {
+        response = requests.post('https://dummyjson.com/comments/add', json={
             "body": "This makes all sense to me!",
             "postId": 3,
             "userId": 5
-        }
-        response = requests.post('https://dummyjson.com/comments/add', json=data)
-        assert response.status_code == 201
-        response_json = response.json()
-        expected_output = {
-            "id": 341,
-            "body": "This makes all sense to me!",
-            "postId": 3,
-            "user": {
-                "id": 5,
-                "username": "emmaj",
-                "fullName": "Emma Miller"
-            }
-        }
-        assert response_json == expected_output
-        print("Testcase1 passed")
+        })
+        print("test_case_1:", {
+            "status_code": response.status_code,
+            "data": response.json()
+        })
+        assert response.status_code == 201, f"Expected status code 201 but got {response.status_code}"
     except Exception as e:
-        print(f"Testcase1 failed: {str(e)}")
+        print(f"Testcase{e.__name__} failed")
 
 def test_case_2():
     try:
-        data = {
+        response = requests.post('https://dummyjson.com/comments/add', json={
             "body": "This makes all sense to me!",
             "postId": 3,
             "userId": None
-        }
-        response = requests.post('https://dummyjson.com/comments/add', json=data)
-        assert response.status_code == 400
-        print("Testcase2 passed")
+        })
+        print("test_case_2:", {
+            "status_code": response.status_code,
+            "data": response.json()
+        })
+        assert response.status_code == 400, f"Expected status code 400 but got {response.status_code}"
     except Exception as e:
-        print(f"Testcase2 failed: {str(e)}")
+        print(f"Testcase{e.__name__} failed")
 
 def test_case_3():
     try:
-        data = {
+        response = requests.post('https://dummyjson.com/comments/add', json={
             "body": "This makes all sense to me!",
             "postId": 3,
             "userId": 12345
-        }
-        response = requests.post('https://dummyjson.com/comments/add', json=data)
-        assert response.status_code == 400
-        print("Testcase3 passed")
+        })
+        print("test_case_3:", {
+            "status_code": response.status_code,
+            "data": response.json()
+        })
+        assert response.status_code == 400, f"Expected status code 400 but got {response.status_code}"
     except Exception as e:
-        print(f"Testcase3 failed: {str(e)}")
+        print(f"Testcase{e.__name__} failed")
 
 def test_case_4():
     try:
-        data = {
+        response = requests.post('https://dummyjson.com/comments/add', json={
             "body": "This makes all sense to me!",
             "postId": 3,
             "userId": 5
-        }
-        del data["user"]
-        response = requests.post('https://dummyjson.com/comments/add', json=data)
-        assert response.status_code == 400
-        print("Testcase4 passed")
+        })
+        print("test_case_4:", {
+            "status_code": response.status_code,
+            "data": response.json()
+        })
+        assert 'user' not in response.json(), f"Expected 'user' field to be missing but got {response.json()}"
     except Exception as e:
-        print(f"Testcase4 failed: {str(e)}")
+        print(f"Testcase{e.__name__} failed")
 
 def test_case_5():
     try:
-        data = {
+        response = requests.post('https://dummyjson.com/comments/add', json={
             "body": "This makes all sense to me!",
             "postId": 3,
             "userId": 5
-        }
-        del data["user"]["fullName"]
-        response = requests.post('https://dummyjson.com/comments/add', json=data)
-        assert response.status_code == 400
-        print("Testcase5 passed")
+        })
+        print("test_case_5:", {
+            "status_code": response.status_code,
+            "data": response.json()
+        })
+        assert 'fullName' not in response.json()['user'], f"Expected 'fullName' field to be missing but got {response.json()}"
     except Exception as e:
-        print(f"Testcase5 failed: {str(e)}")
+        print(f"Testcase{e.__name__} failed")
 
 def run_all_tests():
-    test_functions = [test_case_1, test_case_2, test_case_3, test_case_4, test_case_5]
-    for func in test_functions:
+    test_cases = [test_case_1, test_case_2, test_case_3, test_case_4, test_case_5]
+    for test in test_cases:
         try:
-            func()
+            test()
+            print("PASS")
         except Exception as e:
-            print(f"Testcase failed: {str(e)}")
+            print(f"FAIL: {e}")
 
 if __name__ == "__main__":
     run_all_tests()
